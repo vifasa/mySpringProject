@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+     
+     <!-- member추가 -->
+     <insert id="member_insert" parameterType="member">
+     	insert into member values(
+		     		(select nvl(max(m_idx),0) + 1 from member),
+		     		#{ m_name },
+		     		#{ m_id },
+		     		#{ m_pwd },
+		     		null,
+		     		'일반',
+		     		'user0.jpg',
+		     		#{ m_mail },
+		     		#{ m_ip },
+		     		0,
+		     		sysdate
+		     		)
+     </insert>
+     
+     <!-- m_id 로 1건 조회 -->
+     <select id="member_one_m_id" parameterType="String" resultType="member">
+     	select * from member where m_id=#{m_id}
+     </select>
+
+	<!-- 포인트 수정 up -->
+	<update id="member_point_up" parameterType="int">
+		update member set m_point = m_point+100
+		where m_idx = #{m_idx}
+	</update>
+	
+	<!-- 포인트 수정 down-->
+	<update id="member_point_down" parameterType="int">
+		update member set m_point = m_point-50
+		where m_idx = #{m_idx}
+	</update>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="member_update" parameterType="member">
+		update member set m_name = #{m_name},
+						  m_pwd  = #{m_pwd},
+						  m_image= #{m_image},
+						  m_text = #{m_text},
+						  m_grade= #{m_grade},
+						  m_mail = #{m_mail}
+						  where m_idx = #{m_idx}
+	</update>
+
+	<!-- 회원 정보 하나 가져오기 m_idx-->
+	<select id="member_one_m_idx" parameterType="int" resultType="member">
+		select * from member where m_idx=#{m_idx}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

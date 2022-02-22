@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+	 <select id="board_select_one" parameterType="int" resultType="board">
+	 	select * from board where b_idx = #{b_idx}
+	 </select>
+	
+	 <select id="board_list" resultType="board">
+	 	select * from
+		  (
+				select 
+				  rank() over(order by b_idx desc) as no,
+				  (select nvl(count(*),0) from b_comment where b_idx=b.b_idx) as comment_count,
+				  b.*
+				from 
+				  (select * from board) b
+		   )
+	 </select>
+
+
+     <select id="board_condition_list"  parameterType="Map" resultType="board">
+          select * from
+		  (
+				select 
+				  rank() over(order by b_idx desc) as no,
+				  (select nvl(count(*),0) from b_comment where b_idx=b.b_idx) as comment_count,
+				  b.*
+				from 
+				  ( 
+				     select * from board  where ca_idx = #{ca_idx}
+				     <trim prefix="and"  prefixOverrides="or">  
+			                 
+			             <if test="name!=null">
+			                  m_name like '%' || #{ name } || '%'
+			             </if>
+			             
+			             <if test="subject!=null">
+			                 or b_title  like '%' || #{ subject } || '%'
+			             </if>
+			             
+			             <if test="content!=null">
+			                 or b_content  like '%' || #{ content } || '%'
+			             </if>
+			         </trim>
+				   ) b
+		   )
+		   where no between #{ start }  and  #{ end }  
+     </select>
+     
+     
+     <select id="board_rowtotal"  parameterType="Map"  resultType="int">
+        select nvl(count(*),0) from board
+        <trim prefix="where"  prefixOverrides="or">
+            <if test="name!=null">
+                 m_name like '%' || #{ name } || '%'
+            </if>
+             
+            <if test="subject!=null">
+                or b_title  like '%' || #{ subject } || '%'
+            </if>
+            
+            <if test="content!=null">
+                or b_content  like '%' || #{ content } || '%'
+            </if>
+        </trim>
+     </select>
+     
+     <insert id="board_insert" parameterType="board">
+     	insert into board values(
+     						 seq_board_b_idx.nextVal, 
+     						 #{ca_idx},
+     						 #{b_title},
+     						 #{b_content},
+     						 #{b_ip},
+     						 0,
+     						 0,
+     						 #{m_idx},
+     						 null,
+     						 default,
+     						 sysdate,
+     						 default,
+     						 #{m_name},
+     						 #{m_image}
+     	)
+     </insert>
+
+	 <update id="board_update_readhit" parameterType="int">
+	 	update board set b_readhit = b_readhit + 1
+	 	where b_idx=#{b_idx}
+	 </update>
+
+	 <!-- 좋아요 증가 -->
+	 <update id="board_update_b_like" parameterType="int">
+	 	update board set b_like = b_like + 1
+	 	where b_idx=#{b_idx}
+	 </update>
+	 
+	 <!-- 싫어요 증가 -->
+	 <update id="board_update_b_hate" parameterType="int">
+	 	update board set b_hate = b_hate + 1
+	 	where b_idx=#{b_idx}
+	 </update>
+
+	<!-- 개시글 사용 유무 -->
+	 <update id="board_update_use_yn" parameterType="int">
+	 	update board set b_use_yn = 'n'
+	 	where b_idx=#{b_idx}
+	 </update>
+	 
+	 <update id="board_update" parameterType="board">
+	 	update board set b_title = #{b_title},
+	 					 b_content = #{b_content},
+	 					 b_ip = #{b_ip},
+	 					 b_regdate = sysdate
+	 					 where b_idx=#{b_idx}
+	 </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="category">
+     
+    <!-- 전체리스트 -->
+	<select id="category_list" resultType="category">
+		select * from category
+	</select>
+
+	<!-- 카테고리 생성 -->
+	<insert id="category_insert" parameterType="category">
+		insert into category values(
+			(select nvl(max(ca_idx),0) + 1 from category),
+			#{ca_name},
+			#{ca_image},
+			#{ca_text}
+		)
+	</insert>
+	
+	<!-- ca_idx으로 이름 추출 -->
+	<select id="category_name" parameterType="int" resultType="String">
+		select ca_name from category where ca_idx = #{ca_idx}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

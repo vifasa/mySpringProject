@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comment">
+     
+     <insert id="comment_insert" parameterType="comment">
+     	insert into b_comment values(
+     	seq_b_comment_c_idx.nextVal,
+     	#{m_idx},
+     	#{m_id},
+     	#{m_name},
+     	#{b_idx},
+     	#{c_content},
+     	null,
+     	0,
+     	0,
+     	sysdate,
+     	default,
+     	#{c_ip},
+     	#{m_image}
+     	)
+     </insert>
+     
+     <!-- 페이징 리스트 -->
+     <select id="comment_page_list"  parameterType="Map"  resultType="comment">
+	      select * from
+		  (
+			  select
+			     rank() over(order by c_idx desc) as no,
+			     c.*
+			  from  (select * from b_comment where b_idx=#{ b_idx }) c
+		  )
+		  where no between #{ start } and #{ end }
+     </select>
+     
+     <!-- b_idx별 댓글수 -->
+     <select id="comment_row_total"  parameterType="int"  resultType="int">
+           select nvl(count(*),0) from b_comment
+           where b_idx=#{ b_idx }
+     </select>
+     
+     <select id="comment_list" parameterType="int" resultType="comment">
+     	select * from b_comment where b_idx=#{b_idx}
+     	order by c_idx desc
+     </select>
+
+	 <delete id="comment_delete" parameterType="int">
+	 	delete from b_comment where c_idx=#{c_idx}
+	 </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

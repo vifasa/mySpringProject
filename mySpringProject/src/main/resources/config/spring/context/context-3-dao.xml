@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- MemberDaoImpl 연결해주기 -->
+	<bean id="member_dao" class="dao.MemberDaoImpl">
+		<property name="sqlSession" ref="sqlSession"/>
+	</bean>	
+	
+	<!-- BoardDaoImpl 연결해주기 -->
+	<bean id="board_dao" class="dao.BoardDaoImpl">
+		<property name="sqlSession" ref="sqlSession"/>
+	</bean>	
+	
+	<!-- CategoryDaoImpl 연결해주기 -->
+	<bean id="category_dao" class="dao.CategoryDaoImpl">
+		<property name="sqlSession" ref="sqlSession"/>
+	</bean>	
+	
+	<!-- FavoritesDaoImpl 연결해주기 -->
+	<bean id="favorites_dao" class="dao.FavoritesImpl">
+		<property name="sqlSession" ref="sqlSession"/>
+	</bean>	
+	
+	<!-- CommentDaoImpl 연결해주기 -->
+	<bean id="comment_dao" class="dao.CommentDaoImpl">
+		<property name="sqlSession" ref="sqlSession"/>
+	</bean>	
+</beans>
